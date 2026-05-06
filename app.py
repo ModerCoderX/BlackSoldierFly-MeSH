@@ -60,4 +60,9 @@ trend = (
     .sort_values("Year")
 )
 
-st.line_chart(trend.set_index("Year"))
+#st.line_chart(trend.set_index("Year"))
+
+import plotly.express as px
+
+fig = px.line(trend, x="Year", y="Count", title=selected_term)
+st.plotly_chart(fig)

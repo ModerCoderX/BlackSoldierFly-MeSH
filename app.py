@@ -31,6 +31,33 @@ st.bar_chart(df_top.set_index("MeSH Term"))
 st.dataframe(df_top)
 
 # Search
+df2 = pd.read_csv("pubmed_batched_results.csv")
+df_expanded = df2.dropna(subset=["MeSH Terms"]).copy()
+df_expanded["MeSH Terms"] = df_expanded["MeSH Terms"].str.split(";")
+
+df_expanded = df_expanded.explode("MeSH Terms")
+df_expanded["MeSH Terms"] = df_expanded["MeSH Terms"].str.strip()
+
 search = st.text_input("Search term")
+
 if search:
-    st.dataframe(df[df["MeSH Term"].str.contains(search, case=False)])
+    filtered_terms = df_expanded[
+        df_expanded["MeSH Terms"].str.contains(search, case=False)
+    ]
+
+    st.subheader("Matching articles")
+    st.dataframe(filtered_terms)
+
+terms = sorted(df_expanded["MeSH Terms"].unique())
+selected_term = st.selectbox("Select MeSH term", terms)
+
+term_data = df_expanded[df_expanded["MeSH Terms"] == selected_term]
+
+trend = (
+    term_data.groupby("Year")
+    .size()
+    .reset_index(name="Count")
+    .sort_values("Year")
+)
+
+st.line_chart(trend.set_index("Year"))

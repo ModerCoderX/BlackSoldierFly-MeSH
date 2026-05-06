@@ -59,10 +59,15 @@ trend = (
     .reset_index(name="Count")
     .sort_values("Year")
 )
-
+trend["Year"] = pd.to_numeric(trend["Year"], errors="coerce").astype("Int64")
+trend["Count"] = trend["Count"].astype(int)
 #st.line_chart(trend.set_index("Year"))
 
 import plotly.express as px
 
 fig = px.line(trend, x="Year", y="Count", title=selected_term)
+fig.update_layout(
+    xaxis=dict(dtick=1),   # ensures integer steps (years)
+    yaxis=dict(dtick=1)    # ensures integer counts
+)
 st.plotly_chart(fig)

@@ -10,7 +10,7 @@ Original file is located at
 import streamlit as st
 import pandas as pd
 
-st.image("BSF.jpg")
+st.image("BSF.jpeg")
 st.title("PubMed MeSH Terms Dashboard")
 
 # Load data (uploaded CSV)
